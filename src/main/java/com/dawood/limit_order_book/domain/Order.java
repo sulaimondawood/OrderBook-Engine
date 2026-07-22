@@ -33,4 +33,24 @@ public class Order {
     private LocalDateTime timestamp;
 
     private String userId;
+
+    public BigDecimal getRemainingQuantity(){
+        return quantity.subtract(filledQuantity);
+    }
+
+    public boolean isFilled(){
+        return getRemainingQuantity().compareTo(BigDecimal.ZERO) == 0;
+    }
+
+    public void fill(BigDecimal quantityToFill){
+        if(quantityToFill == null || quantityToFill.compareTo(BigDecimal.ZERO) <=0) return;
+
+        BigDecimal newQuantityFill = filledQuantity.add(quantityToFill);
+
+        if(newQuantityFill.compareTo(quantityToFill) > 0){
+            filledQuantity = quantityToFill;
+        }else {
+            filledQuantity =newQuantityFill;
+        }
+    }
 }
