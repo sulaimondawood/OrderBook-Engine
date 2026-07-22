@@ -9,11 +9,14 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
 public class Order {
-    private String id;
+    private UUID id;
+
+    private UUID orderId;
 
     private Side side;
 
