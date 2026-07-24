@@ -4,6 +4,7 @@ package com.dawood.limit_order_book.domain;
 import com.dawood.limit_order_book.domain.enums.OrderStatus;
 import com.dawood.limit_order_book.domain.enums.OrderType;
 import com.dawood.limit_order_book.domain.enums.Side;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class Order {
     private UUID id;
 
@@ -26,9 +28,9 @@ public class Order {
 
     private BigDecimal quantity;
 
-    private BigDecimal filledQuantity;
+    private BigDecimal filledQuantity = BigDecimal.ZERO;
 
-    private OrderStatus status;
+    private OrderStatus status = OrderStatus.NEW;
 
     private LocalDateTime timestamp;
 
@@ -47,10 +49,18 @@ public class Order {
 
         BigDecimal newQuantityFill = filledQuantity.add(quantityToFill);
 
-        if(newQuantityFill.compareTo(quantityToFill) > 0){
-            filledQuantity = quantityToFill;
+        filledQuantity = newQuantityFill.compareTo(quantity)>0?quantityToFill:newQuantityFill;
+
+        if(isFilled()){
+          status=OrderStatus.FILLED;
         }else {
-            filledQuantity =newQuantityFill;
+            status=OrderStatus.PARTIALLY_FILLED;
         }
+    }
+
+    public void cancel(String user){
+        status = OrderStatus.CANCELLED;
+        timestamp=LocalDateTime.now();
+        userId = user;
     }
 }
